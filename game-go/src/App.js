@@ -1,10 +1,13 @@
-// import { connect } from "react-redux";
 import "./App.css";
-import { Counter } from "./components/Counter";
+import React from "react";
+import Board from "./components/board/Board";
 
 const App = () => {
+    
   return (
-        <Counter/>
+    <div className="background">
+        <Board />
+    </div>
   );
 };
 export default App;
