@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateBoard } from "../../store/reducers/boardSlice";
 import Sketch from "react-p5";
 import './Board.css';
+import Scoreboard from "../scoreboard/Scoreboard";
 
 const Board = () => {
   const rows = 19; // Number of rows in the board
@@ -137,10 +138,12 @@ const Board = () => {
   
 
   return (
+    <>
     <div className="board-wrapper">
       <Sketch setup={setup} draw={draw} mouseClicked={mouseClicked} />
     </div>
-  
+    <Scoreboard />
+    </>
   );
 };
 
