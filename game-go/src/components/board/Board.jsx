@@ -1,34 +1,16 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { updateBoard } from "../../store/store";
 import Sketch from "react-p5";
+import './Board.css';
 
 const Board = () => {
   const rows = 19; // Number of rows in the board
   const cols = 19; // Number of columns in the board
   const cellSize = 30; // Size of each cell in pixels
   const [player, setPlayer] = useState(true); // Current player Turn Black : White
-
-  const [board, setBoard] = useState([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    // ... initial board state
-  ]);
+  const board = useSelector((state) => state.board);
+  const dispatch = useDispatch();
 
   const setup = (p5, parent) => {
     p5.createCanvas(cols * cellSize, rows * cellSize).parent(parent);
@@ -71,8 +53,8 @@ const Board = () => {
     const row = Math.floor(p5.mouseY / cellSize);
 
     // Create a copy of the board array to update the state immutably
-    const updatedBoard = [...board];
-
+    
+    let updatedBoard = [...board];
     if (player) {
       updatedBoard[row][col] = 1; // Update the clicked cell to 1
       setPlayer(!player);
@@ -91,10 +73,9 @@ const Board = () => {
       capturedPieces.forEach(({ x, y }) => {
         updatedBoard[y][x] = 0; // Remove captured pieces by setting their value to 0
       });
-    }
-
+  }
     // Update the state with the new board array
-    setBoard(updatedBoard);
+    dispatch(updateBoard(updatedBoard));
   };
 
   const checkSurroundedPieces = (board, col, row, targetColor) => {
@@ -121,7 +102,12 @@ const Board = () => {
     return capturedPieces;
   };
 
-  return <Sketch setup={setup} draw={draw} mouseClicked={mouseClicked} />;
+  return (
+    <div className="board-wrapper">
+      <Sketch setup={setup} draw={draw} mouseClicked={mouseClicked} />
+    </div>
+  
+  );
 };
 
 export default Board;
