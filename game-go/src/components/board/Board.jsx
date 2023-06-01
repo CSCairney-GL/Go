@@ -11,6 +11,7 @@ const Board = () => {
   const [player, setPlayer] = useState(true); // Current player Turn Black : White
   const board = useSelector((state) => state.board);
   const dispatch = useDispatch();
+  let [turn, setTurn] = useState(-1);
 
   const setup = (p5, parent) => {
     p5.createCanvas(cols * cellSize, rows * cellSize).parent(parent);
@@ -27,9 +28,6 @@ const Board = () => {
       p5.line(0 + limits, rope, p5.width - limits, rope);
       p5.line(rope, 0 + limits, rope, p5.height - limits);
     }
-
-    // ... drawing logic
-
     // Iterate through the rows
     for (let i = 0; i < rows; i++) {
       // Iterate through the columns
@@ -49,12 +47,22 @@ const Board = () => {
   };
 
   const mouseClicked = (p5) => {
+    setTurn(turn++);
+    if (turn<=0) {
+        setTurn(turn++)
+        return;
+    }
+
     const col = Math.floor(p5.mouseX / cellSize);
     const row = Math.floor(p5.mouseY / cellSize);
+    if (!player) {
+      console.log("New Black Position: X=" + col + " Y=" + row);
+    } else {
+      console.log("New White Position: X=" + col + " Y=" + row);
+    }
 
     // Create a copy of the board array to update the state immutably
     // let updatedBoard = [...board];
-
     if (player) {
       dispatch(updateBoard({ row, col, value: 1 })); // Update the clicked cell to 1
       setPlayer(!player);
@@ -74,33 +82,59 @@ const Board = () => {
         dispatch(updateBoard({ row, col, value: 0 })); // Remove captured pieces by setting their value to 0
       });
   }
-    // Update the state with the new board array
-    // dispatch(updateBoard(updatedBoard));
   };
 
   const checkSurroundedPieces = (board, col, row, targetColor) => {
     const capturedPieces = [];
-
-    const checkNeighbors = (x, y) => {
-      if (x >= 0 && x < cols && y >= 0 && y < rows && board[y][x] !== targetColor && board[y][x] !== 0) {
-        const capturedPiece = { x, y };
-        if (!capturedPieces.some((piece) => piece.x === x && piece.y === y)) {
-          capturedPieces.push(capturedPiece);
-          checkSurroundedNeighbors(x, y);
+  
+    const checkSurroundedNeighbors = (x, y) => {
+      const neighbors = [
+        { dx: 1, dy: 0 },
+        { dx: -1, dy: 0 },
+        { dx: 0, dy: 1 },
+        { dx: 0, dy: -1 },
+      ];
+  
+      let surrounded = true;
+  
+      const checkNeighbors = (nx, ny) => {
+        if (
+          nx >= 0 &&
+          nx < cols &&
+          ny >= 0 &&
+          ny < rows &&
+          board[ny][nx] !== targetColor &&
+          board[ny][nx] !== 0
+        ) {
+          const capturedPiece = { x: nx, y: ny };
+          if (!capturedPieces.some((piece) => piece.x === nx && piece.y === ny)) {
+            capturedPieces.push(capturedPiece);
+            checkSurroundedNeighbors(nx, ny);
+          }
+        }
+      };
+  
+      for (const neighbor of neighbors) {
+        const nx = x + neighbor.dx;
+        const ny = y + neighbor.dy;
+  
+        if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
+          if (board[ny][nx] === 0) {
+            surrounded = false;
+            break;
+          } else if (board[ny][nx] !== targetColor) {
+            checkNeighbors(nx, ny);
+          }
         }
       }
+      return surrounded;
     };
-
-    const checkSurroundedNeighbors = (x, y) => {
-      checkNeighbors(x + 1, y);
-      checkNeighbors(x - 1, y);
-      checkNeighbors(x, y + 1);
-      checkNeighbors(x, y - 1);
-    };
-
+  
     checkSurroundedNeighbors(col, row);
     return capturedPieces;
   };
+  
+  
 
   return (
     <div className="board-wrapper">

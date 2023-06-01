@@ -1,7 +1,7 @@
 import React from "react";
 import "./root.css";
 import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CompanyLogo from "../../assets/branding/Logo.png";
 import { Link, Outlet } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -25,7 +25,7 @@ const Root = () => {
           <div>
             <img className={activeMenu ? "menu-logo-active" : "menu-logo"} src={CompanyLogo} alt=' ' />
           </div>
-          <div>{activeMenu ? <></> : <FontAwesomeIcon icon='fa-sharp fa-solid fa-arrow-right-long' />}</div>
+          {/* <div>{activeMenu ? <></> : <FontAwesomeIcon icon='fa-sharp fa-solid fa-arrow-right-long' />}</div> */}
           {activeMenu ? (
             <nav className='navbar-wrapper-active'>
               <Link className='nav-link' to={`/`}>
