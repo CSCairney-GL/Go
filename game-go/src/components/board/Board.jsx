@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { updateBoard } from "../../store/store";
+import { updateBoard } from "../../store/reducers/boardSlice";
 import Sketch from "react-p5";
 import './Board.css';
 
@@ -53,29 +53,29 @@ const Board = () => {
     const row = Math.floor(p5.mouseY / cellSize);
 
     // Create a copy of the board array to update the state immutably
-    
-    let updatedBoard = [...board];
+    // let updatedBoard = [...board];
+
     if (player) {
-      updatedBoard[row][col] = 1; // Update the clicked cell to 1
+      dispatch(updateBoard({ row, col, value: 1 })); // Update the clicked cell to 1
       setPlayer(!player);
 
       // Check for surrounded pieces and remove them
-      const capturedPieces = checkSurroundedPieces(updatedBoard, col, row, 1);
+      const capturedPieces = checkSurroundedPieces(board, col, row, 1);
       capturedPieces.forEach(({ x, y }) => {
-        updatedBoard[y][x] = 0; // Remove captured pieces by setting their value to 0
+        dispatch(updateBoard({ row, col, value: 0 })); // Remove captured pieces by setting their value to 0
       });
     } else {
-      updatedBoard[row][col] = 2; // Update the clicked cell to 2
+      dispatch(updateBoard({ row, col, value: 2 })); // Update the clicked cell to 2
       setPlayer(!player);
 
       // Check for surrounded pieces and remove them
-      const capturedPieces = checkSurroundedPieces(updatedBoard, col, row, 2);
+      const capturedPieces = checkSurroundedPieces(board, col, row, 2);
       capturedPieces.forEach(({ x, y }) => {
-        updatedBoard[y][x] = 0; // Remove captured pieces by setting their value to 0
+        dispatch(updateBoard({ row, col, value: 0 })); // Remove captured pieces by setting their value to 0
       });
   }
     // Update the state with the new board array
-    dispatch(updateBoard(updatedBoard));
+    // dispatch(updateBoard(updatedBoard));
   };
 
   const checkSurroundedPieces = (board, col, row, targetColor) => {
