@@ -1,0 +1,85 @@
+:root {
+    --primary-orange: rgba(246, 90, 28, 255);
+    --primary-background: #fbf3e3;
+    background: var(--primary-background) !important;
+}
+
+:root[data-theme-mode="dark"] {
+    --color-primary: rgb(107, 79, 158);
+    --color-heading: rgb(0, 0, 0);
+    --color-text: hsl(0deg 0% 97%);
+  }
+
+body, h1, h2, h3, h4, h5, h6 {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+/* Neumorphism.io */
+.neumorph-orange {
+    border-radius: 50px;
+    background: #f65a1c;
+    box-shadow: 20px 20px 60px #d14d18,
+        -20px -20px 60px #ff6820;
+}
+
+/* CSS for Menu Component */
+.menu-container {
+    width: 2vw;
+    height: 100vh;
+    padding-top: 15px;
+    background-color: var(--primary-orange);
+    border-radius: 50px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    background: #f65a1c;
+    box-shadow: 20px 20px 60px #d14d18,
+        -20px -20px 60px #ff6820;
+
+    /* position */
+    position:fixed;
+    left: 0;
+    top:0;
+
+    /* Display */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.menu-container:hover {
+    height:100%;
+    width:15vw;
+    transition: all 0.5s ease;
+}
+
+.menu-logo-active {
+    transition: 2s ease;
+    height:20%;
+    width:auto;
+    display: flex !important;
+    justify-self: flex-start;
+    align-self: center;
+    margin: 0 5px 10px 0;
+}
+
+.menu-logo {
+    display: none !important;
+}
+
+.navbar-wrapper-active {
+    display: flex;
+    height: 50%;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 10%;
+}
+
+.navbar-wrapper {
+    display: none;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--primary-background);
+    width: 90%;
+}
