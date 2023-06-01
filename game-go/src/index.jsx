@@ -5,8 +5,10 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Board from "./components/board/Board.jsx";
-import Root from "./components/root/Root.jsx";
-import ErrorPage from "./error-page";
+import Root from "./components/root/root.jsx";
+import ErrorPage from "./components/errorPage/error-page.jsx";
+import { Provider } from "react-redux";
+import store from "./store/store.js";
 
 
 const router = createBrowserRouter([
@@ -25,6 +27,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );

@@ -1,18 +1,14 @@
 import React from "react";
 import "./root.css";
 import { useState } from "react";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CompanyLogo from "../../assets/branding/Logo.png";
 import { Link, Outlet } from "react-router-dom";
-import { Provider } from "react-redux";
-import store from "../../store/store";
 
 const Root = () => {
   const [activeMenu, setActiveMenu] = useState(false);
 
   return (
     <>
-      <Provider store={store}>
         <div
           className='menu-container'
           onMouseEnter={() => {
@@ -49,7 +45,6 @@ const Root = () => {
           )}
         </div>
         <Outlet />
-      </Provider>
     </>
   );
 };
