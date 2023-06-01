@@ -1,0 +1,11 @@
+.scoreboard-container {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    width:30vw;
+    min-width:100px;
+    height: 80vh;
+    min-height:100px !important;
+    background-color: grey;
+    border-radius: 10px;
+}

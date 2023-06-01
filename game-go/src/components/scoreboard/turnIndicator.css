@@ -1,0 +1,9 @@
+.turn-container {
+    margin-left: 2.5%;
+    margin-top:2.5%;
+    width: 95%;
+    height:20%;
+    min-height:50px;
+    border: 12px;
+    background-color: white;
+}

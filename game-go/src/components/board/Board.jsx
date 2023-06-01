@@ -138,12 +138,12 @@ const Board = () => {
   
 
   return (
-    <>
-    <div className="board-wrapper">
-      <Sketch setup={setup} draw={draw} mouseClicked={mouseClicked} />
+    <div className="total-container">
+      <div className="board-wrapper">
+        <Sketch setup={setup} draw={draw} mouseClicked={mouseClicked} />
+      </div>
+      <Scoreboard />
     </div>
-    <Scoreboard />
-    </>
   );
 };
 

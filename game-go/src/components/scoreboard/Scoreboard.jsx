@@ -4,9 +4,9 @@ import TurnIndicator from './TurnIndicator';
 
 const Scoreboard = () => {
     return (
-        <>
-        <TurnIndicator/>
-        </>
+        <div className="scoreboard-container">
+            <TurnIndicator/>
+        </div>
     );
 }
 
