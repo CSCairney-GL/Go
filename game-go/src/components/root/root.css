@@ -1,7 +1,11 @@
 :root {
-    --primary-orange: rgba(246, 90, 28, 255);
-    --primary-background: #fbf3e3;
-    background: var(--primary-background) !important;
+    /* --primary-orange: rgba(246, 90, 28, 255); */
+    /* --primary-background: #fbf3e3; */
+    --primary-orange:#5C5F30;
+    --primary-background:#e57f30;
+    --highlight-colour: #F0DAC0;
+    
+    background: var(--highlight-colour) !important;
 }
 
 :root[data-theme-mode="dark"] {
@@ -15,25 +19,25 @@ body, h1, h2, h3, h4, h5, h6 {
   }
 
 /* Neumorphism.io */
-.neumorph-orange {
-    border-radius: 50px;
-    background: #f65a1c;
-    box-shadow: 20px 20px 60px #d14d18,
-        -20px -20px 60px #ff6820;
+.neumorph-primary {
+    border-radius: 10px;
+    background: var(--primary-background);
+    box-shadow: 20px 20px 60px var(--primary-background),
+        -20px -20px 60px var(--primary-background);
 }
 
 /* CSS for Menu Component */
 .menu-container {
-    width: 2vw;
+    width: 1vw;
     height: 100vh;
     padding-top: 15px;
-    background-color: var(--primary-orange);
-    border-radius: 50px;
+    background-color: var(--primary-background);
+    border-radius: 20px;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
-    background: #f65a1c;
-    box-shadow: 20px 20px 60px #d14d18,
-        -20px -20px 60px #ff6820;
+    background: var(--primary-background);
+    box-shadow: 20px 20px 60px var(--primary-background),
+        -20px -20px 60px var(--primary-background);
 
     /* position */
     position:fixed;
@@ -68,10 +72,10 @@ body, h1, h2, h3, h4, h5, h6 {
 
 .navbar-wrapper-active {
     display: flex;
-    height: 50%;
+    height: 40%;
     flex-direction: column;
     justify-content: flex-end;
-    gap: 10%;
+    gap: 7.5%;
 }
 
 .navbar-wrapper {
@@ -80,6 +84,6 @@ body, h1, h2, h3, h4, h5, h6 {
 
 .nav-link {
     text-decoration: none;
-    color: var(--primary-background);
+    color: white;
     width: 90%;
 }

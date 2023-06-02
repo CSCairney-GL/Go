@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const boardSlice = createSlice({
   name: 'board',
-  initialState: [
+  initialState: {
+    board: [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -22,11 +23,12 @@ const boardSlice = createSlice({
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ],
+    ],
+  },
   reducers: {
     updateBoard: (state, action) => {
       const { row, col, value } = action.payload;
-      state[row][col] = value;
+      state.board[row][col] = value;
     },
   },
 });

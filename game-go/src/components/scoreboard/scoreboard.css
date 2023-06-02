@@ -2,10 +2,9 @@
     align-self: center;
     display: flex;
     flex-direction: column;
-    width:30vw;
+    width:15vw;
     min-width:100px;
-    height: 80vh;
-    min-height:100px !important;
-    background-color: grey;
+    height: fit-content;
     border-radius: 10px;
+    background-color: var(--primary-background);
 }
