@@ -3,9 +3,8 @@
     flex-direction: row;
     justify-content: space-evenly;
     gap: 5%;
-    padding-left:5%;
-    width: 80vw;
-    height:100vh;
+    /* padding-left:5%; */
+    height:fit-content;
 }
 
 .board-wrapper {

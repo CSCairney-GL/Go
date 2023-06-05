@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { updateBoard, updateScores } from "../../store/reducers/boardSlice";
 import Sketch from "react-p5";
-import './Board.css';
-
+import "./Board.css";
 
 // Board component
 const Board = () => {
@@ -12,10 +11,9 @@ const Board = () => {
   const cellSize = 30; // Size of each cell in pixels
   const [player, setPlayer] = useState(true); // Current player Turn Black : White
   const board = useSelector((state) => state.board.board); // Current Board Status
-  const whiteScore = useSelector((state) => state.board.scores.white); // Current White Score
-  const blackScore = useSelector((state) => state.board.scores.black); // Current Black Score
   const dispatch = useDispatch(); // Init the Redux dispatch call
-  let [turn, setTurn] = useState(-1); // Turn count indicator
+  const [turn, setTurn] = useState(-1); // Turn count indicator
+  const [capturedPieces, setCapturedPieces] = useState([]); // Captured pieces
 
   const setup = (p5, parent) => {
     try {
@@ -54,29 +52,32 @@ const Board = () => {
         }
       }
 
-        // Draw scores
-        p5.fill(255);
-        p5.textSize(20);
-        p5.text(`Black Score: ${whiteScore}`, 10, p5.height - 30);
-        p5.text(`White Score: ${blackScore}`, 10, p5.height - 10);
+      // Remove captured pieces from the display
+      capturedPieces.forEach(({ x, y }) => {
+        const xPos = x * cellSize;
+        const yPos = y * cellSize;
 
+        p5.strokeWeight(0);
+        p5.fill("rgb(164,116,73)");
+        p5.rect(xPos, yPos, cellSize, cellSize);
+      });
     } catch (error) {
       console.error("Error in draw:", error);
     }
   };
 
-  const updateScoresAndBoard = (capturedPieces) => {
+  const updateScoresAndBoard = () => {
     capturedPieces.forEach(({ x, y }) => {
       dispatch(updateBoard({ x, y, value: 0 })); // Remove captured pieces by setting their value to 0
     });
   
     // Calculate scores based on the number of pieces of each color on the board
     const blackCount = board.reduce(
-      (count, row) => count + row.filter((piece) => piece === 2).length,
+      (count, row) => count + row.filter((piece) => piece === (player ? 2 : 1)).length,
       0
     );
     const whiteCount = board.reduce(
-      (count, row) => count + row.filter((piece) => piece === 1).length,
+      (count, row) => count + row.filter((piece) => piece === (player ? 1 : 2)).length,
       0
     );
   
@@ -84,39 +85,100 @@ const Board = () => {
     dispatch(updateScores({ black: blackCount, white: whiteCount }));
   };
   
+  const checkSurroundedPieces = (col, row, targetColor) => {
+    const neighbors = [
+      { dx: 1, dy: 0 },
+      { dx: -1, dy: 0 },
+      { dx: 0, dy: 1 },
+      { dx: 0, dy: -1 },
+    ];
+
+    const capturedPieces = [];
+
+    const checkSurroundedNeighbors = (x, y, color) => {
+      let surrounded = true;
+
+      const checkNeighbors = (nx, ny) => {
+        if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
+          const neighborColor = board[ny][nx];
+
+          if (neighborColor === color) {
+            const capturedPiece = { x: nx, y: ny };
+            if (!capturedPieces.some((piece) => piece.x === nx && piece.y === ny)) {
+              capturedPieces.push(capturedPiece);
+              checkSurroundedNeighbors(nx, ny, color);
+            }
+          } else if (neighborColor === 0) {
+            surrounded = false;
+          }
+        }
+      };
+
+      for (const neighbor of neighbors) {
+        const nx = x + neighbor.dx;
+        const ny = y + neighbor.dy;
+
+        if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
+          if (board[ny][nx] === 0) {
+            surrounded = false;
+            break;
+          } else if (board[ny][nx] !== color) {
+            checkNeighbors(nx, ny);
+          }
+        }
+      }
+      return surrounded;
+    };
+
+    const color = board[row][col];
+
+    if (color === 0) {
+      return capturedPieces;
+    }
+
+    const surrounded = checkSurroundedNeighbors(col, row, color);
+
+    if (surrounded) {
+      capturedPieces.push({ x: col, y: row });
+    }
+
+    return capturedPieces;
+  };
 
   const mouseClicked = (p5) => {
     try {
-      if (turn <=0) {
-        turn++;
+      if (turn < 0) {
+        setTurn(turn + 1);
         return null;
       }
+  
       const canvasX = p5.mouseX;
       const canvasY = p5.mouseY;
-
+  
       // Check if the click is within the canvas boundaries
       if (canvasX >= 0 && canvasX < p5.width && canvasY >= 0 && canvasY < p5.height) {
-        setTurn(turn++);
-
         const col = Math.floor(canvasX / cellSize);
         const row = Math.floor(canvasY / cellSize);
-
+  
         if (player) {
           console.log("New Black Position: X=" + col + " Y=" + row);
         } else {
           console.log("New White Position: X=" + col + " Y=" + row);
         }
-
+  
         const color = player ? 2 : 1;
-
+  
         dispatch(updateBoard({ row, col, value: color }));
+  
+        const capturedPieces = checkSurroundedPieces(col, row, color);
+        setCapturedPieces(capturedPieces);
+        updateScoresAndBoard();
+  
         setPlayer(!player);
-
-        const capturedPieces = checkSurroundedPieces(board, col, row, color);
-        capturedPieces.forEach(({ x, y }) => {
-          dispatch(updateBoard({ x, y, value: 0 })); // Remove captured pieces by setting their value to 0
-        });
-        updateScoresAndBoard(capturedPieces);
+        setTurn(turn + 1);
+  
+        // Redraw the canvas
+        p5.redraw();
       } else {
         console.log("Click outside the canvas boundaries");
       }
@@ -124,70 +186,12 @@ const Board = () => {
       console.error("Error in mouseClicked:", error);
     }
   };
-
-  const checkSurroundedPieces = (board, col, row, targetColor) => {
-    try {
-      console.log("checkSurroundedPieces: board=", board, " position:", col, ",", row, " Target Colour:", targetColor);
-      const capturedPieces = [];
-
-      const checkSurroundedNeighbors = (x, y) => {
-        console.log("checkSurroundedNeighbors called: X=", x, " Y=", y);
-        const neighbors = [
-          { dx: 1, dy: 0 },
-          { dx: -1, dy: 0 },
-          { dx: 0, dy: 1 },
-          { dx: 0, dy: -1 },
-        ];
-
-        let surrounded = true;
-
-        const checkNeighbors = (nx, ny) => {
-          console.log("checkNeighbors called: nx=", nx, " ny=", ny);
-          if (
-            nx >= 0 &&
-            nx < cols &&
-            ny >= 0 &&
-            ny < rows &&
-            board[ny][nx] !== targetColor
-          ) {
-            const capturedPiece = { x: nx, y: ny };
-            if (!capturedPieces.some((piece) => piece.x === nx && piece.y === ny)) {
-              capturedPieces.push(capturedPiece);
-              console.log(capturedPieces);
-              checkSurroundedNeighbors(nx, ny);
-            }
-          }
-        };
-
-        for (const neighbor of neighbors) {
-          console.log(neighbor);
-          const nx = x + neighbor.dx;
-          const ny = y + neighbor.dy;
-
-          if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
-            if (board[ny][nx] === 0) {
-              surrounded = false;
-              break;
-            } else if (board[ny][nx] !== targetColor) {
-              checkNeighbors(nx, ny);
-            }
-          }
-        }
-        return surrounded;
-      };
-
-      checkSurroundedNeighbors(col, row);
-      return capturedPieces;
-    } catch (error) {
-      console.error("Error in checkSurroundedPieces:", error);
-      return [];
-    }
-  };
+  
 
   return (
     <div className="total-container">
       <div className="board-wrapper">
-          <Sketch setup={setup} draw={draw} mouseClicked={mouseClicked} />
+        <Sketch setup={setup} draw={draw} mouseClicked={mouseClicked} />
       </div>
     </div>
   );
