@@ -4,11 +4,11 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import Board from "./components/board/Board.jsx";
 import Root from "./components/root/root.jsx";
 import ErrorPage from "./components/errorPage/error-page.jsx";
 import { Provider } from "react-redux";
 import store from "./store/store.js";
+import Game from "./pages/game.jsx";
 
 
 const router = createBrowserRouter([
@@ -19,7 +19,7 @@ const router = createBrowserRouter([
     children: [
       {
         path:"game",
-        element: <Board />,
+        element: <Game/>,
       }
     ]
   },
